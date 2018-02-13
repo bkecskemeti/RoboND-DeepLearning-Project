@@ -4,7 +4,7 @@ The challenge is to train a deep neural network to identify and track a target i
 
 ### The neural network architecture
 
-Below is an explanation each layer of the network architecture and the role that it plays in the overall network. I have experimented with two different network architectures differing in depth, one with 4 encoder/decoder blocks, and another with only 2 encoder/decoder blocks.
+Below is an explanation of each layer of the network architecture and the role that it plays in the overall network. I have experimented with two different network architectures differing in depth, one with 4 encoder/decoder blocks, and another with only 2 encoder/decoder blocks.
 
 #### Fully Convolutional Neural Networks
 
@@ -73,6 +73,8 @@ output_layer = layers.BatchNormalization()(output_layer)
 #### Architectures
 
 I tried two different FCNs to solve the "Follow Me" task, one with 4 encoder/decoder blocks, and another with only 2 encoder/decoder blocks.
+
+Initially, I expected the deeper network to perform better, however it turned out that actually the smaller network with 2 encoder/decoder blocks outperforms the deeper network with the parameters and data I provided. (See results below.) One reason for that might be, that the dataset is not particularly big and the deeper network has more weights and is more prone to overfitting.
 
 #### Network 1 (FCN-2)
 
@@ -171,11 +173,18 @@ I left the parameters at the recommended values, except for the learning rate (s
 
 * *Validation steps per epoch:* same as the steps per epoch, but for validation images.
 
-* *Number of workers:* the number of parallel threads used to train the model. A [p2.xlarge](https://aws.amazon.com/ec2/instance-types/p2/) instance on the AWS has 1 GPU and 4 CPUs.
+* *Number of workers:* the number of parallel threads used to train the model. A [p2.xlarge](https://aws.amazon.com/ec2/instance-types/p2/) instance on the AWS has 1 GPU and 4 CPUs. The computation is mostly done on the GPU, so a value `>1` one will not increase performance.
 
 #### Parameter tuning
 
 Brute force tuning was used by experimenting with different parameter values and picking the best performing setup.
+
+The ranges I tried for the different parameters are:
+* Learning rate: `0.002` .. `0.007`
+* Batch size: `20` .. `40`
+* Steps per epoch: `100` .. `200`
+* Validation steps: `30` .. `60`
+* Number of epochs: `20` .. `50`
 
 #### Scoring
 
@@ -207,12 +216,47 @@ The following metrics are recorded for every experiment:
 
 | Experiment # | Network | Learning rate | # Epochs | Batch size | Steps per epoch | Validation steps |
 |---|---|---|---|---|---|---|
-| 1 | FCN-2| 0.007 | 25 | 32 | 100 | 50 |
+| 1 | FCN-2 | 0.007 | 25 | 32 | 100 | 50 |
+| 2 | FCN-4 | 0.005 | 25 | 32 | 100 | 50 |
+| 3 | FCN-2 | 0.003 | 20 | 20 | 200 | 60 |
+| 4 | FCN-2 | 0.002 | 50 | 32 | 100 | 50 |
+| 5 | FCN-4 | 0.002 | 50 | 40 | 100 | 30 |
 
 
-| Experiment # | iou_t_o | iou_t_h | iou_p_o | iou_f_o | iou_f_h | final_iou | final_score |
-|---|---|---|---|---|---|---|---|
-| 1 | 0.2960 | 0.8719 | 0.6971 | 0.3618 | 0.2283 | 0.5501 | 0.4076 |
+| Experiment # | iou_t_o | iou_t_h | iou_p_o | iou_f_o | iou_f_h | final_iou | final_score | Link to notebook |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 0.2960 | 0.8719 | 0.6971 | 0.3618 | 0.2283 | 0.5501 | **0.4076** |[model_training_1.html](../results/model_training_1.html) |
+| 2 | 0.3172 | 0.8838 | 0.7135 | 0.3870 | 0.1263 | 0.5051 | 0.3640 | [model_training_2.html](../results/model_training_2.html) |
+| 3 | 0.3310 | 0.7618 | 0.6955 | **0.4119** | 0.1582 | 0.4600 | 0.3506 | [model_training_3.html](../results/model_training_3.html) |
+| 4 | 0.3222 | 0.8982 | 0.6854 | 0.4095 | **0.2398** | **0.5690** | 0.4050 | [model_training_4.html](../results/model_training_4.html) |
+| 5 | **0.3526** | **0.9169** | **0.7561** | 0.4045 | 0.0880 | 0.5025 | 0.3459 | [model_training_5.html](../results/model_training_5.html) |
+
+Notes:
+* FCN-4 performs worse than FCN-2 on this task with the data and parameters, even if loss values are better, which is a sign of overfitting.
+* Increasing the number of epochs over 25 does not really help as the convergence effectively stalls afterwards. The results can even be worse as seen by comparing experiment 1 and 4, where, even if the `final_iou` increased slightly with more epochs, the `final_score`is worse because a higher number of false positives.
+* The results when the target is far away are not so good, more data should be collected specifically for this case.
+
+**Run 1 fulfills the requirements for a passing submission, with a combined final score of 40.76%.**
+
+#### Images
+
+Convergence graph for the loss function for the training and validation sets:
+
+![training_convergence](./training_convergence.png)
+
+Below are sample images for different scenarios. Each line has three images: the sample camera image, the ground truth, and the prediction. The background is red, the hero is blue, and other people are green.
+
+Sample images when the drone is following the hero:
+
+![sample_follow_mode](./sample_follow_mode.png)
+
+Sample images when the drone is on patrol and the hero can not be seen:
+
+![sample_patrol_mode](./sample_patrol_mode.png)
+
+Sample images when the hero is far away:
+
+![sample_far_away](./sample_far_away.png)
 
 ### Limitations and possible improvements
 
