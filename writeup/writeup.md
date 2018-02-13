@@ -12,6 +12,8 @@ Fully Convolutional Neural Networks (FCNs) were designed to solve semantic segme
 
 The network architecture consists of a number of encoder layers with separable convolutions and batch normalization, an 1x1 convolution to learn segments preserving spatial information, and decoder layers with bilinear upsampling and skip layers to relevant encoder layers.
 
+*Note:* If the task was classification rather than segmentation, instead of the 1x1 convolution and upsampling, fully connected layers could be used. A fully connected layer connects every output of the previous layer (representing higher level features) to each of `n` outputs of the fully connected layer. The output of the fully connected layer corresponds to the probability of each class the object might belong to.
+
 #### Encoder layers
 
 The encoder part is a convolution network that reduces to a deeper 1x1 convolution layer. Separable convolutions comprise of a convolution performed over each channel of an input layer and followed by a 1x1 convolution that takes the output channels from the previous step and then combines them into an output layer.
