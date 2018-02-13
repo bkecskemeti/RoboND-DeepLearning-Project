@@ -225,11 +225,11 @@ The following metrics are recorded for every experiment:
 
 | Experiment # | iou_t_o | iou_t_h | iou_p_o | iou_f_o | iou_f_h | final_iou | final_score | Link to notebook |
 |---|---|---|---|---|---|---|---|---|
-| 1 | 0.2960 | 0.8719 | 0.6971 | 0.3618 | 0.2283 | 0.5501 | **0.4076** |[model_training_1.html](../results/model_training_1.html) |
-| 2 | 0.3172 | 0.8838 | 0.7135 | 0.3870 | 0.1263 | 0.5051 | 0.3640 | [model_training_2.html](../results/model_training_2.html) |
-| 3 | 0.3310 | 0.7618 | 0.6955 | **0.4119** | 0.1582 | 0.4600 | 0.3506 | [model_training_3.html](../results/model_training_3.html) |
-| 4 | 0.3222 | 0.8982 | 0.6854 | 0.4095 | **0.2398** | **0.5690** | 0.4050 | [model_training_4.html](../results/model_training_4.html) |
-| 5 | **0.3526** | **0.9169** | **0.7561** | 0.4045 | 0.0880 | 0.5025 | 0.3459 | [model_training_5.html](../results/model_training_5.html) |
+| 1 | 0.2960 | 0.8719 | 0.6971 | 0.3618 | 0.2283 | 0.5501 | **0.4076** |[model_training_1.html](../results/run_1/model_training_1.html) |
+| 2 | 0.3172 | 0.8838 | 0.7135 | 0.3870 | 0.1263 | 0.5051 | 0.3640 | [model_training_2.html](../results/run_2/model_training_2.html) |
+| 3 | 0.3310 | 0.7618 | 0.6955 | **0.4119** | 0.1582 | 0.4600 | 0.3506 | [model_training_3.html](../results/run_3/model_training_3.html) |
+| 4 | 0.3222 | 0.8982 | 0.6854 | 0.4095 | **0.2398** | **0.5690** | 0.4050 | [model_training_4.html](../results/run_4/model_training_4.html) |
+| 5 | **0.3526** | **0.9169** | **0.7561** | 0.4045 | 0.0880 | 0.5025 | 0.3459 | [model_training_5.html](../results/run_5/model_training_5.html) |
 
 Notes:
 * FCN-4 performs worse than FCN-2 on this task with the data and parameters, even if loss values are better, which is a sign of overfitting.
